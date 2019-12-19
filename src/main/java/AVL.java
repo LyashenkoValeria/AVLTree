@@ -35,7 +35,7 @@ public class AVL<T extends Comparable<T>> implements SortedSet<T> {
         return Math.max(right, left) + 1;
     }
 
-    public Node<T> smallLeftRotation(Node node){
+    public Node<T> smallLeftRotation(Node node) {
         Node newNode = node.right;
         node.right = newNode.left;
         newNode.left = node;
@@ -44,7 +44,7 @@ public class AVL<T extends Comparable<T>> implements SortedSet<T> {
         return newNode;
     }
 
-    public Node<T> smallRightRotation(Node node){
+    public Node<T> smallRightRotation(Node node) {
         Node newNode = node.left;
         node.left = newNode.right;
         newNode.right = node;
@@ -53,42 +53,46 @@ public class AVL<T extends Comparable<T>> implements SortedSet<T> {
         return newNode;
     }
 
-    public Node<T> bigLeftRotation(Node<T> node){
+    public Node<T> bigLeftRotation(Node<T> node) {
         node.left = smallLeftRotation(node.left);
         return smallRightRotation(node);
     }
 
-    public Node<T> bigRightRotation(Node<T> node){
+    public Node<T> bigRightRotation(Node<T> node) {
         node.right = smallRightRotation(node.right);
         return smallLeftRotation(node);
     }
 
     //Балансировка для добавлениея в дерево
-    public Node<T> balancing(Node<T> node, T data){
+    public Node<T> balancing(Node<T> node, T data) {
         int balance = balance(node);
-            if(balance < -1){
-                if(data.compareTo(node.right.value)>0){
-                    return smallLeftRotation(node);
-                } else {return bigRightRotation(node);}
+        if (balance < -1) {
+            if (data.compareTo(node.right.value) > 0) {
+                return smallLeftRotation(node);
+            } else {
+                return bigRightRotation(node);
             }
-            if(balance > 1){
-                if(data.compareTo(node.left.value)>0){
-                    return smallRightRotation(node);
-                } else {bigLeftRotation(node);}
+        }
+        if (balance > 1) {
+            if (data.compareTo(node.left.value) > 0) {
+                return smallRightRotation(node);
+            } else {
+                bigLeftRotation(node);
             }
+        }
         return node;
     }
 
     //Балансировка для удаления из дерева
-    public Node<T> removeBalancing(Node<T> node){
-        if(balance(node) < -1){
-            if(balance(node.right) > 0){
+    public Node<T> removeBalancing(Node<T> node) {
+        if (balance(node) < -1) {
+            if (balance(node.right) > 0) {
                 node.right = smallRightRotation(node.right);
             }
             return smallLeftRotation(node);
         }
-        if(balance(node) > 1){
-            if (balance(node.left) < 0){
+        if (balance(node) > 1) {
+            if (balance(node.left) < 0) {
                 node.left = smallLeftRotation(node.left);
             }
             return smallRightRotation(node);
@@ -104,14 +108,13 @@ public class AVL<T extends Comparable<T>> implements SortedSet<T> {
         return true;
     }
 
-    public Node<T> insert(Node<T> current, T t){
-        if(current == null){
+    public Node<T> insert(Node<T> current, T t) {
+        if (current == null) {
             return new Node<>(t);
         }
-        if(t.compareTo(current.value) < 0){
+        if (t.compareTo(current.value) < 0) {
             current.left = insert(current.left, t);
-        }
-        else {
+        } else {
             current.right = insert(current.right, t);
         }
         current = balancing(current, t);
@@ -134,9 +137,9 @@ public class AVL<T extends Comparable<T>> implements SortedSet<T> {
         if (delete == null) return false;
 
             //У удаляемого 0 или 1 потомок
-        else if(delete.left == null || delete.right == null) {
+        else if (delete.left == null || delete.right == null) {
             if (delete.left == null) changeNode(delete, parent, delete.right);
-            else  changeNode(delete, parent, delete.left);
+            else changeNode(delete, parent, delete.left);
         }
 
         //У удаляемого 2 потомка
@@ -161,7 +164,7 @@ public class AVL<T extends Comparable<T>> implements SortedSet<T> {
         return true;
     }
 
-    public void changeNode(Node<T> del, Node<T> parent, Node<T> newChild){
+    public void changeNode(Node<T> del, Node<T> parent, Node<T> newChild) {
         if (del == root) {
             root = newChild;
         } else if (parent.left == del) {
@@ -223,12 +226,10 @@ public class AVL<T extends Comparable<T>> implements SortedSet<T> {
         int comparison = value.compareTo(start.value);
         if (comparison == 0) {
             return start;
-        }
-        else if (comparison < 0) {
+        } else if (comparison < 0) {
             if (start.left == null) return start;
             return find(start.left, value);
-        }
-        else {
+        } else {
             if (start.right == null) return start;
             return find(start.right, value);
         }
@@ -246,11 +247,12 @@ public class AVL<T extends Comparable<T>> implements SortedSet<T> {
 
         private AVLIterator() {
             Node<T> node = root;
-            while (node != null){
+            while (node != null) {
                 stack.push(node);
                 node = node.left;
             }
         }
+
 
         @Override
         public boolean hasNext() {
@@ -264,12 +266,12 @@ public class AVL<T extends Comparable<T>> implements SortedSet<T> {
             return current.value;
         }
 
-        public Node<T> nextNode(){
+        public Node<T> nextNode() {
             Node<T> node = stack.pop();
             current = node;
-            if (node.right != null){
+            if (node.right != null) {
                 node = node.right;
-                while (node != null){
+                while (node != null) {
                     stack.push(node);
                     node = node.left;
                 }
@@ -304,16 +306,25 @@ public class AVL<T extends Comparable<T>> implements SortedSet<T> {
     public Object[] toArray() {
         Object[] array = new Object[size()];
         Iterator<T> iterator = iterator();
-        for(int i = 0; i < size(); i++){
-            if(iterator.hasNext()){
+        for (int i = 0; i < size(); i++) {
+            if (iterator.hasNext()) {
                 array[i] = iterator.next();
             }
         }
         return array;
     }
 
+    @Override
     public <T1> T1[] toArray(T1[] a) {
-        return null;
+        Object[] array = toArray();
+        if (a.length < size) {
+            return (T1[]) Arrays.copyOf(array, size, a.getClass());
+        }
+        System.arraycopy(array, 0, a, 0, size);
+        if (a.length > size) {
+            a[size] = null;
+        }
+        return a;
     }
 
     @Override
@@ -328,30 +339,30 @@ public class AVL<T extends Comparable<T>> implements SortedSet<T> {
     @Override
     public boolean addAll(Collection<? extends T> c) {
         boolean b = false;
-        for(T t : c){
-            if(this.add(t)) b = true;
+        for (T t : c) {
+            if (this.add(t)) b = true;
         }
         return b;
     }
 
     @Override
     public boolean retainAll(Collection<?> c) {
-       boolean b = false;
-       Iterator<T> iterator = iterator();
-       while (iterator.hasNext()){
-           if(!c.contains(iterator.next())){
-               iterator.remove();
-               b = true;
-           }
-       }
+        boolean b = false;
+        Iterator<T> iterator = iterator();
+        while (iterator.hasNext()) {
+            if (!c.contains(iterator.next())) {
+                iterator.remove();
+                b = true;
+            }
+        }
         return b;
     }
 
     @Override
     public boolean removeAll(Collection<?> c) {
         boolean b = false;
-        for(Object t : c){
-            if(this.contains(t)){
+        for (Object t : c) {
+            if (this.contains(t)) {
                 this.remove(t);
                 b = true;
             }
@@ -365,24 +376,22 @@ public class AVL<T extends Comparable<T>> implements SortedSet<T> {
         size = 0;
     }
 
-    public class SubTree<ST extends Comparable<ST>> extends AVL<ST>{
+    public static class SubTree<ST extends Comparable<ST>> extends AVL<ST> {
         AVL<ST> tree;
         ST fromElem, toElem;
 
-        public SubTree(AVL<ST> tree, ST fromElem, ST toElem){
+        public SubTree(AVL<ST> tree, ST fromElem, ST toElem) {
             this.tree = tree;
             this.fromElem = fromElem;
             this.toElem = toElem;
         }
 
-        private boolean inSubTree(ST elem){
-            if(fromElem != null && toElem != null){
+        private boolean inSubTree(ST elem) {
+            if (fromElem != null && toElem != null) {
                 return elem.compareTo(fromElem) >= 0 && elem.compareTo(toElem) < 0;
-            }
-            else if (fromElem == null){
+            } else if (fromElem == null) {
                 return elem.compareTo(toElem) < 0;
-            }
-            else return elem.compareTo(fromElem) >= 0;
+            } else return elem.compareTo(fromElem) >= 0;
         }
 
         @Override
@@ -408,10 +417,34 @@ public class AVL<T extends Comparable<T>> implements SortedSet<T> {
             return (inSubTree((ST) o)) && tree.contains(o);
         }
 
-        private int subTreeSize(Node<ST> node){
+        @Override
+        public boolean containsAll(Collection<?> c) {
+            for (Object t : c) {
+                if (!contains(t))
+                    return false;
+            }
+            return true;
+        }
+
+        @Override
+        public SortedSet<ST> subSet(ST fromElement, ST toElement) {
+            return new SubTree<>(tree, fromElement, toElement);
+        }
+
+        @Override
+        public SortedSet<ST> headSet(ST toElement) {
+            return new SubTree<>(tree, null, toElement);
+        }
+
+        @Override
+        public SortedSet<ST> tailSet(ST fromElement) {
+            return new SubTree<>(tree, fromElement, null);
+        }
+
+        private int subTreeSize(Node<ST> node) {
             int size = 0;
-            if(node != null){
-                if(inSubTree(node.value)){
+            if (node != null) {
+                if (inSubTree(node.value)) {
                     size++;
                 }
                 size += subTreeSize(node.left);
@@ -421,9 +454,132 @@ public class AVL<T extends Comparable<T>> implements SortedSet<T> {
         }
 
         @Override
-        public int size(){
+        public Iterator<ST> iterator() {
+            return new SubTreeIterator();
+        }
+
+        @Override
+        public int size() {
             return subTreeSize(tree.root);
         }
 
+        public class SubTreeIterator implements Iterator<ST> {
+
+            Iterator<ST> iterator = SubTree.this.tree.iterator();
+            ST next = null;
+
+            SubTreeIterator() {
+                while (iterator.hasNext()) {
+                    ST node = iterator.next();
+                    if (inSubTree(node)) {
+                        next = node;
+                        break;
+                    }
+                }
+            }
+
+            @Override
+            public boolean hasNext() {
+                return next != null;
+            }
+
+            @Override
+            public ST next() {
+                if (next == null) throw new NoSuchElementException();
+                ST node = next;
+                if (iterator.hasNext()) {
+                    next = iterator.next();
+                } else {
+                    next = null;
+                }
+                if (!inSubTree(next)) next = null;
+                return node;
+            }
+
+            @Override
+            public void remove() {
+                iterator.remove();
+            }
+        }
+
+        @Override
+        public ST first() {
+            for (ST elem : tree) {
+                if (inSubTree(elem)) return elem;
+            }
+            throw new NoSuchElementException();
+        }
+
+        @Override
+        public ST last() {
+            ST last = null;
+            for (ST elem : tree) {
+                if (inSubTree(elem)) last = elem;
+                if (toElem != null && elem.compareTo(toElem) >= 0) break;
+            }
+            if (last == null) throw new NoSuchElementException();
+            return last;
+        }
+
+        @Override
+        public void clear() {
+            tree.clear();
+        }
+
+        @Override
+        public boolean isEmpty() {
+            return size() == 0;
+        }
+
+        @Override
+        public boolean removeAll(Collection<?> c) {
+            boolean b = false;
+            for (Object t : c) {
+                if (tree.contains(t)) {
+                    tree.remove(t);
+                    b = true;
+                }
+            }
+            return b;
+        }
+
+        @Override
+        public boolean addAll(Collection<? extends ST> c) {
+            boolean b = false;
+            for (ST t : c) {
+                if (tree.add(t)) b = true;
+            }
+            return b;
+        }
+
+        @Override
+        public boolean retainAll(Collection<?> c) {
+            return tree.retainAll(c);
+        }
+
+        @Override
+        public Object[] toArray() {
+            Object[] array = new Object[size()];
+            Iterator<ST> iterator = iterator();
+            for (int i = 0; i < size(); i++) {
+                if (iterator.hasNext()) {
+                    array[i] = iterator.next();
+                }
+            }
+            return array;
+        }
+
+        @Override
+        public <T1> T1[] toArray(T1[] a) {
+            Object[] array = toArray();
+            if (a.length < size()) {
+                return (T1[]) Arrays.copyOf(array, size(), a.getClass());
+            }
+            System.arraycopy(array, 0, a, 0, size());
+            if (a.length > size()) {
+                a[size()] = null;
+            }
+            return a;
+        }
     }
 }
