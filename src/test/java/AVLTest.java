@@ -91,9 +91,7 @@ class AVLTest {
         assertFalse(set.contains(7));
 
         SortedSet finalSet = set;
-        assertThrows(IllegalArgumentException.class, () -> {
-            finalSet.add(0);
-        });
+        assertThrows(IllegalArgumentException.class, () -> finalSet.add(0));
         assertFalse(set.remove(200));
     }
 
@@ -125,9 +123,7 @@ class AVLTest {
         assertFalse(set.contains(11));
 
         SortedSet finalSet = set;
-        assertThrows(IllegalArgumentException.class, () -> {
-            finalSet.add(200);
-        });
+        assertThrows(IllegalArgumentException.class, () -> finalSet.add(200));
     }
 
     @Test
@@ -159,10 +155,7 @@ class AVLTest {
         assertFalse(tree.contains(20));
 
         SortedSet finalSet = set;
-        assertThrows(IllegalArgumentException.class, () -> {
-            finalSet.add(-200);
-        });
-
+        assertThrows(IllegalArgumentException.class, () -> finalSet.add(-200));
     }
 
     @Test
@@ -252,8 +245,13 @@ class AVLTest {
     void subTree() {
         SortedSet empty = tree.subSet(15, 15);
         assertTrue(empty.isEmpty());
+
         SortedSet set = tree.headSet(15);
-        SortedSet subSet = set.headSet(5);
+        SortedSet subSet = set.headSet(25);
+        SortedSet finalSubSet = subSet;
+        assertThrows(IllegalArgumentException.class, () -> finalSubSet.add(20));
+
+        subSet = set.headSet(5);
         assertEquals(4, subSet.size());
         subSet = set.subSet(2, 4);
         assertEquals(2, subSet.size());
@@ -268,6 +266,70 @@ class AVLTest {
         set.add(12);
         set.add(14);
         assertEquals(8, subSet.size());
+    }
+
+    @Test
+    void changeBordersForSubSet() {
+        SortedSet set = tree.subSet(4, 8);
+        SortedSet subset = set.subSet(3, 9);
+        assertEquals(set.size(), subset.size());
+        for (int i = 4; i < 8; i++) {
+            assertTrue(subset.contains(i));
+        }
+        assertFalse(subset.contains(3));
+        assertFalse(subset.contains(8));
+
+        subset = set.headSet(9);
+        assertEquals(set.size(), subset.size());
+        for (int i = 4; i < 8; i++) {
+            assertTrue(subset.contains(i));
+        }
+        assertFalse(subset.contains(2));
+        assertFalse(subset.contains(8));
+
+        subset = set.tailSet(2);
+        assertEquals(set.size(), subset.size());
+        subset = set.subSet(8,11);
+        assertEquals(0, subset.size());
+    }
+
+    @Test
+    void changeBordersForHeadSet() {
+        SortedSet set = tree.headSet(5);
+        SortedSet subset = set.subSet(2, 8);
+        assertEquals(3, subset.size());
+        for (int i = 2; i < 5; i++) {
+            assertTrue(subset.contains(i));
+        }
+        assertFalse(subset.contains(5));
+        assertFalse(subset.contains(6));
+        assertFalse(subset.contains(7));
+
+        subset = set.headSet(10);
+        assertEquals(set.size(), subset.size());
+        subset = set.tailSet(1);
+        assertEquals(4, subset.size());
+        subset = set.subSet(8, 10);
+        assertEquals(0, subset.size());
+    }
+
+    @Test
+    void changeBordersForTailSet() {
+        SortedSet set = tree.tailSet(3);
+        SortedSet subset = set.subSet(2, 6);
+        assertEquals(3, subset.size());
+        for (int i = 3; i < 6; i++) {
+            assertTrue(subset.contains(i));
+        }
+        assertFalse(subset.contains(2));
+        assertFalse(subset.contains(6));
+
+        subset = set.headSet(8);
+        assertEquals(5, subset.size());
+        subset = set.tailSet(2);
+        assertEquals(set.size(), subset.size());
+        subset = set.subSet(1, 2);
+        assertEquals(0, subset.size());
     }
 
     @Test

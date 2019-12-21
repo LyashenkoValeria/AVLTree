@@ -16,7 +16,6 @@ public class AVL<T extends Comparable<T>> implements SortedSet<T> {
     public Node<T> root = null;
     private int size = 0;
 
-
     private int height(Node<T> node) {
         if (node == null) return -1;
         return node.height;
@@ -428,17 +427,29 @@ public class AVL<T extends Comparable<T>> implements SortedSet<T> {
 
         @Override
         public SortedSet<ST> subSet(ST fromElement, ST toElement) {
-            return new SubTree<>(tree, fromElement, toElement);
+            ST from = fromElement;
+            ST to = toElement;
+            if (fromElem != null && fromElem.compareTo(fromElement) > 0) from = fromElem;
+            if (toElem != null && toElem.compareTo(toElement) < 0) to = toElem;
+            return new SubTree<>(tree, from, to);
         }
 
         @Override
         public SortedSet<ST> headSet(ST toElement) {
-            return new SubTree<>(tree, null, toElement);
+            ST from = null;
+            ST to = toElement;
+            if (fromElem != null) from = fromElem;
+            if (toElem != null && toElem.compareTo(toElement) < 0) to = toElem;
+            return new SubTree<>(tree, from, to);
         }
 
         @Override
         public SortedSet<ST> tailSet(ST fromElement) {
-            return new SubTree<>(tree, fromElement, null);
+            ST from = fromElement;
+            ST to = null;
+            if (fromElem != null && fromElem.compareTo(fromElement) > 0) from = fromElem;
+            if (toElem != null) to = toElem;
+            return new SubTree<>(tree, from, to);
         }
 
         private int subTreeSize(Node<ST> node) {
