@@ -289,7 +289,7 @@ class AVLTest {
 
         subset = set.tailSet(2);
         assertEquals(set.size(), subset.size());
-        subset = set.subSet(8,11);
+        subset = set.subSet(8, 11);
         assertEquals(0, subset.size());
     }
 
@@ -411,13 +411,13 @@ class AVLTest {
     @Test
     void toArray() {
         Object treeArray[] = tree.toArray();
-        for(Object elem : treeArray){
+        for (Object elem : treeArray) {
             tree.contains(elem);
         }
 
         SortedSet<Integer> set = tree.subSet(1, 5);
         Object a[] = set.toArray();
-        for(Object elem : a){
+        for (Object elem : a) {
             assertTrue(set.contains(elem));
         }
     }
